@@ -61,7 +61,7 @@ export default function App(){
  const expenseCount=current.filter(e=>e.kind==='expense').length;
  const avgExpense=expenseCount>0?expenses/expenseCount:0;
  const topCategory=useMemo(()=>{const sums=new Map<string,number>();for(const t of current){if(t.kind!=='expense')continue;const key=categories.find(c=>c.id===t.category_id)?.name||'Sin categoría';sums.set(key,(sums.get(key)||0)+t.amount)}return [...sums].sort((a,b)=>b[1]-a[1])[0]||null},[current,categories]);
- function exportJson(){const file={application:'Finanzas',version:1,exportedAt:new Date().toISOString(),transactions:entries,categories};const blob=new Blob([JSON.stringify(file,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='finanzas-respaldo-'+localDate()+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
+ function exportJson(){const file={application:'Finanzas',version:2,exportedAt:new Date().toISOString(),transactions:entries,categories,...(accountsAvailable?{accounts}:{}),notes:'Copia exportada de los datos cargados en la aplicación. No incluye autenticación ni otros módulos.'};const blob=new Blob([JSON.stringify(file,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='finanzas-respaldo-'+localDate()+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
 
  const savingsRate=income>0?((income-expenses)/income)*100:null;
  const monthlyChange=previous>0?((expenses-previous)/previous)*100:null;
