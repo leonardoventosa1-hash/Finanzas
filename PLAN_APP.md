@@ -11,7 +11,7 @@ Una aplicación de finanzas personales para múltiples usuarios. Cada persona cr
 - PWA: manifest, iconos y service worker
 
 ## MVP
-1. Registro, login, logout y recuperación de contraseña.
+1. Acceso exclusivamente por invitación del administrador, login, logout y recuperación de contraseña.
 2. Panel con saldo, ingresos, gastos y balance mensual (ARS).
 3. Alta, edición y eliminación de movimientos.
 4. Categorías de ingresos y gastos.
@@ -25,6 +25,14 @@ Una aplicación de finanzas personales para múltiples usuarios. Cada persona cr
 - transactions: id, user_id, category_id, kind, amount, currency, occurred_on, description, created_at
 
 Dinero: NUMERIC(14,2) y divisa inicial ARS; no usar números flotantes para cálculos financieros.
+
+## Acceso privado por invitación
+- No mostrar ni habilitar registro público.
+- Solo el administrador puede invitar correos electrónicos desde un panel protegido.
+- Las invitaciones se emiten desde una función segura en el servidor usando la API de administración de Supabase, nunca desde el navegador.
+- Enviar enlace de invitación con vencimiento, de un solo uso según el flujo de autenticación implementado; validar el estado de invitación y la identidad antes de habilitar el perfil.
+- Revocar invitaciones pendientes y desactivar cuentas cuando corresponda; verificar que la desactivación impida acceso a los datos incluso con sesiones previas.
+- El administrador no puede ver las finanzas de otros usuarios por defecto; cualquier acceso excepcional requerirá definición y autorización explícita.
 
 ## Requisitos de seguridad
 - Habilitar Row Level Security (RLS) en todas las tablas con datos personales.
