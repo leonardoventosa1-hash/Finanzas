@@ -16,3 +16,5 @@
 .month-navigation{display:flex;align-items:center;gap:5px}.month-navigation button{background:#f1f2fb;border:1px solid #e4e6f4;color:#555a9c;border-radius:12px;min-height:40px;min-width:32px;font-size:24px;line-height:1;cursor:pointer}.month-navigation button:focus-visible{outline:2px solid #6266b8;outline-offset:2px}.month-navigation input{min-width:0}
 
 .account-totals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 19px}.account-totals>div{display:flex;flex-direction:column;gap:6px;background:#f5f6fc;border-radius:15px;padding:14px;min-width:0}.account-totals small{color:#788299;font-size:12px}.account-totals strong{font-size:20px;overflow-wrap:anywhere}@media(max-width:490px){.account-totals{grid-template-columns:1fr}}
+
+.accounts-archive-toggle{display:flex;align-items:center;gap:9px;font-size:13px;color:#69728a;margin:16px 0;cursor:pointer}.accounts-archive-toggle input{width:17px;height:17px;accent-color:#6266b8}
