@@ -1,24 +1,27 @@
-# Finanzas — plan actualizado (versión individual)
+# Finanzas — uso personal con Supabase
 
-## Decisión
-El proyecto pasa de un prototipo multiusuario a una aplicación de uso **personal**, instalable como PWA en iPhone, sin Supabase ni autenticación.
+## Decisión actual
+Una única cuenta personal, sin registro público ni invitaciones. Guardar datos en la nube para acceder desde iPhone y computadora.
 
-## Incluido en esta etapa
-- Interfaz responsive para iPhone.
-- Registro y eliminación de ingresos y gastos en pesos argentinos.
-- Balance mensual y filtro por período.
-- Guardado local en el navegador.
-- Exportación e importación manual de copias de seguridad.
+## Arquitectura
+- React + TypeScript + Vite para el cliente PWA.
+- Supabase Auth para inicio de sesión.
+- Supabase Postgres con Row Level Security para ingresos y gastos.
+- Hosting HTTPS por configurar.
 
-## Próximas mejoras
-1. Compilar y verificar errores de TypeScript.
-2. Probar en Safari e instalación desde pantalla de inicio.
-3. Agregar service worker para uso sin conexión y optimizar íconos.
-4. Categorías, edición de movimientos, filtros y presupuestos.
-5. Evaluar almacenamiento más sólido / sincronización opcional si se necesita usar varios dispositivos.
-6. Evaluar protección adicional para datos financieros.
+## MVP
+1. Inicio de sesión con correo y contraseña.
+2. Balance mensual en ARS.
+3. Agregar, listar y eliminar ingresos y gastos.
+4. Diseño mobile-first y manifest de instalación.
 
-## Limitaciones
-Los datos se guardan solo en el navegador del iPhone. No están cifrados por la app ni sincronizados, pueden perderse por limpieza del almacenamiento o cambio de dispositivo. Respaldos manuales recomendados.
+## Pendiente
+- Crear proyecto Supabase y configurar credenciales públicas.
+- Crear el único usuario de manera privada (desactivar altas públicas).
+- Verificar políticas RLS con pruebas efectivas.
+- Terminar el proceso de recuperación y actualización de contraseña.
+- Compilar y probar en iPhone y escritorio.
+- Despliegue, service worker y plan de copias de seguridad.
 
-El código Supabase anterior puede archivarse o eliminarse cuando se confirme el cambio definitivo; ahora no se usa.
+## Datos y seguridad
+El proyecto SQL `supabase/migrations/001_initial.sql` contiene tablas y políticas RLS. Nunca subir claves de servicio ni contraseñas. La clave pública y URL de Supabase pueden usarse en el frontend cuando RLS está configurado; la clave secreta solo puede existir en un servidor seguro.
