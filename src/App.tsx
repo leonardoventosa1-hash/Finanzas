@@ -30,7 +30,7 @@ export default function App(){
  const [budgetDraft,setBudgetDraft]=useState('');
  const budgetKey=session?'finanzas_budget_v2_'+session.user.id+'_'+month:null;
  const [monthlyBudget,setMonthlyBudget]=useState<number|null>(null);
- useEffect(()=>{if(!budgetKey){setMonthlyBudget(null);return}try{const raw=window.localStorage.getItem(budgetKey);const n=Number(raw);setMonthlyBudget(raw!==null&&Number.isFinite(n)&&n>0?n:null)}catch{setMonthlyBudget(null)}},[budgetKey]);
+ useEffect(()=>{if(!budgetKey){setMonthlyBudget(null);return}try{let raw=window.localStorage.getItem(budgetKey);if(raw===null&&month===localDate().slice(0,7)){const legacy=window.localStorage.getItem('finanzas_budget_v1');if(legacy!==null&&Number.isFinite(Number(legacy))&&Number(legacy)>0){window.localStorage.setItem(budgetKey,legacy);window.localStorage.removeItem('finanzas_budget_v1');raw=legacy}}const n=Number(raw);setMonthlyBudget(raw!==null&&Number.isFinite(n)&&n>0?n:null)}catch{setMonthlyBudget(null)}},[budgetKey]);
  function saveBudget(){const n=Number(budgetDraft);if(!Number.isFinite(n)||n<=0){setError('Ingresá un presupuesto mayor a cero.');return}if(!budgetKey)return;try{window.localStorage.setItem(budgetKey,String(n));setMonthlyBudget(n);setBudgetDraft('');setNotice('Presupuesto de '+month+' guardado en este dispositivo.')}catch{setError('No se pudo guardar el presupuesto en este dispositivo.')}}
  function removeBudget(){if(!budgetKey)return;try{window.localStorage.removeItem(budgetKey);setMonthlyBudget(null);setNotice('Presupuesto del mes eliminado.')}catch{setError('No se pudo eliminar el presupuesto local.')}}
 
