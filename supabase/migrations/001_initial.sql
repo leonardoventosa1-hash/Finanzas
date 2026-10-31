@@ -1,0 +1,20 @@
+-- Execute in a dedicated Supabase project. Disable public signups in Auth settings.
+create table public.profiles (id uuid primary key references auth.users(id) on delete cascade, display_name text, created_at timestamptz not null default now());
+create table public.categories (id uuid primary key default gen_random_uuid(), user_id uuid not null references auth.users(id) on delete cascade, name text not null, kind text not null check(kind in ('income','expense')), created_at timestamptz not null default now(), unique(id,user_id), unique(user_id,name,kind));
+create table public.transactions (id uuid primary key default gen_random_uuid(), user_id uuid not null references auth.users(id) on delete cascade, category_id uuid, kind text not null check(kind in ('income','expense')), amount numeric(14,2) not null check(amount>0), currency text not null default 'ARS' check(currency='ARS'), occurred_on date not null default current_date, description text not null check(length(trim(description)) between 1 and 120), created_at timestamptz not null default now(), foreign key(category_id,user_id) references public.categories(id,user_id));
+create index transactions_user_date_idx on public.transactions(user_id,occurred_on desc);
+alter table public.profiles enable row level security;
+alter table public.categories enable row level security;
+alter table public.transactions enable row level security;
+create policy "read own profile" on public.profiles for select to authenticated using ((select auth.uid())=id);
+create policy "update own profile" on public.profiles for update to authenticated using ((select auth.uid())=id) with check ((select auth.uid())=id);
+create policy "read own categories" on public.categories for select to authenticated using ((select auth.uid())=user_id);
+create policy "create own categories" on public.categories for insert to authenticated with check ((select auth.uid())=user_id);
+create policy "update own categories" on public.categories for update to authenticated using ((select auth.uid())=user_id) with check ((select auth.uid())=user_id);
+create policy "delete own categories" on public.categories for delete to authenticated using ((select auth.uid())=user_id);
+create policy "read own transactions" on public.transactions for select to authenticated using ((select auth.uid())=user_id);
+create policy "create own transactions" on public.transactions for insert to authenticated with check ((select auth.uid())=user_id);
+create policy "update own transactions" on public.transactions for update to authenticated using ((select auth.uid())=user_id) with check ((select auth.uid())=user_id);
+create policy "delete own transactions" on public.transactions for delete to authenticated using ((select auth.uid())=user_id);
+create function public.create_profile_for_new_user() returns trigger language plpgsql security definer set search_path='' as $$begin insert into public.profiles(id) values(new.id);return new;end;$$;
+create trigger on_auth_user_created after insert on auth.users for each row execute function public.create_profile_for_new_user();
